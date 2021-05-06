@@ -30,12 +30,12 @@ class WebScout:
         pool.join()
         Reporter.generate(self.report_dir, self.data)
 
-    def scout(self, url: str):
+    def scout(self, url: str) -> None:
         probe_data = self.probe(url)
-        screenshot_data = self.take_screenshot(self.report_dir, url)
+        screenshot_file = self.take_screenshot(url)
         self.data.append({
             **probe_data,
-            'screenshot': screenshot_data
+            'screenshot': screenshot_file
         })
 
     def probe(self, url: str) -> dict:
@@ -48,7 +48,7 @@ class WebScout:
         filename = os.path.abspath(f'{self.report_dir}/responses/{uuid.uuid4()}.http')
         with open(filename, 'w') as f:
             f.write(self.parse_response(response))
-        cli.ok(f'Response from {url} saved to {filename}')
+        cli.ok(f'Response from {url} saved to {os.path.basename(filename)}')
         return {
             'url': url,
             'status_code': response.status_code,
@@ -56,25 +56,49 @@ class WebScout:
             'body': response
         }
 
-    def take_screenshot(self, path: str, url: str) -> str:
+    def take_screenshot(self, url: str) -> str:
         d = self.driver()
         cli.info(f'Taking screenshot of {url}...')
         try:
             d.get(url)
             filename = f"{uuid.uuid4()}.png"
-            path = f"{path}/screenshots/{filename}"
+            path = os.path.abspath(f"{self.report_dir}/screenshots/{filename}")
             d.save_screenshot(path)
-            cli.ok(f'Screenshot for {url} successfully saved')
+            cli.ok(f'Screenshot for {url} successfully saved to {os.path.basename(filename)}')
         except:
             cli.error(f'Screenshot of {url} failed')
         d.close()
         return filename
 
     @staticmethod
-    def parse_response(response: Response) -> str:
-        headers = '\r\n'.join(f'{k}: {v}' for k, v in response.headers.items())
-        body = response.text
-        return f"HTTP/1.1 {response.status_code} {response.reason}\nHost: {response.url}\n{headers}\n{body}\n"
+    def read_urls() -> [str]:
+        urls = []
+        if not sys.stdin.isatty():
+            for url in sys.stdin:
+                urls.append(url.strip())
+            return urls
+        else:
+            print("Stdin empty")
+            sys.exit(1)
+
+    @staticmethod
+    def create_report_directory(path: str) -> None:
+        if not os.path.exists(path):
+            for _ in [
+                f"{path}/",
+                f"{path}/screenshots",
+                f"{path}/responses"
+            ]:
+                os.makedirs(_)
+
+    @staticmethod
+    def driver() -> Chrome:
+        options = ChromeOptions()
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        driver = Chrome(options=options)
+        driver.set_window_size(1920, 1080)
+        return driver
 
     @staticmethod
     def prepare_url(url: str) -> str:
@@ -95,31 +119,7 @@ class WebScout:
         return f"{protocol}://{domain}:{port}"
 
     @staticmethod
-    def create_report_directory(path: str) -> None:
-        if not os.path.exists(path):
-            for _ in [
-                f"{path}/",
-                f"{path}/screenshots",
-                f"{path}/responses"
-            ]:
-                os.makedirs(_)
-
-    @staticmethod
-    def read_urls() -> [str]:
-        urls = []
-        if not sys.stdin.isatty():
-            for url in sys.stdin:
-                urls.append(url.strip())
-            return urls
-        else:
-            print("Stdin empty")
-            sys.exit(1)
-
-    @staticmethod
-    def driver() -> Chrome:
-        options = ChromeOptions()
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        driver = Chrome(options=options)
-        driver.set_window_size(1920, 1080)
-        return driver
+    def parse_response(response: Response) -> str:
+        headers = '\r\n'.join(f'{k}: {v}' for k, v in response.headers.items())
+        body = response.text
+        return f"HTTP/1.1 {response.status_code} {response.reason}\nHost: {response.url}\n{headers}\n{body}\n"
