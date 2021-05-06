@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WebScout Report</title>
+</head>
+<style>
+    body {
+        font: 14px "Segoe UI Semibold";
+    }
+    .main {
+        margin: auto;
+        width: 530px;
+        align-items: center;
+    }
+    .datum {
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        box-shadow: 0 10px 18px 0 #9f9e9e;
+    }
+    .screenshot {
+        max-width: 500px;
+    }
+</style>
+<body>
+<div class="header">
+    <h3>Webscout</h3>
+</div>
+<div class="main">
+    {% for d in data %}
+        <div class="datum">
+            <h3>{{ d['url'] }}</h3>
+            <img class="screenshot" src="./screenshots/{{ d['screenshot'] }}" alt="">
+            <a class="button" href="{{ d['url'] }}"></a>
+        </div>
+    {% endfor %}
+</div>
+</body>
+</html>
