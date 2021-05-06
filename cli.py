@@ -25,49 +25,25 @@ def config() -> (str, int):
     return args.output, args.threads
 
 
-def info(msg: str):
-    print(f"{Colors.BLUE}{Icons.INFO}{Colors.DEFAULT} {msg}")
+def info(msg: str) -> None:
+    print(f"{Colors.BLUE}{Icons.INFO}{Colors.DEFAULT} {msg}{Colors.DEFAULT}")
 
 
-def ok(msg: str):
-    print(f"{Colors.GREEN}{Icons.OK}{Colors.DEFAULT} {msg}")
+def ok(msg: str) -> None:
+    print(f"{Colors.GREEN}{Icons.OK}{Colors.DEFAULT} {msg}{Colors.DEFAULT}")
 
 
-def error(msg: str):
-    print(f"{Colors.RED}{Icons.ERROR} {msg}")
+def error(msg: str) -> None:
+    print(f"{Colors.RED}{Icons.ERROR} {msg}{Colors.DEFAULT}")
 
 
-def req_info(url: str):
-    info(f"Request {Icons.ARROW} {Colors.CYAN}{url}")
-
-
-def req_ok(url: str, status_code: int):
-    ok(f"Request {Icons.ARROW} {Colors.CYAN}{url} {Colors.DEFAULT}{Icons.ARROW} {color_status(status_code)}")
-
-
-def req_error(url: str):
-    error(f"Request {Icons.ARROW} {Colors.CYAN}{url} {Colors.RED}failed!")
-
-
-def screenshot_info(url: str):
-    info(f"Screenshot {Icons.ARROW} {Colors.CYAN}{url}")
-
-
-def screenshot_ok(url: str):
-    ok(f"Screenshot {Icons.ARROW} {Colors.CYAN}{url} {Colors.GREEN}ok")
-
-
-def screenshot_error(url: str):
-    error(f"Could not take screenshot for {Colors.CYAN}{url}")
-
-
-def color_status(status: int):
-    if status < 200:
-        return f"{Colors.BLUE}{status}"
-    if status < 300:
-        return f"{Colors.GREEN}{status}"
-    if status < 400:
-        return f"{Colors.CYAN}{status}"
-    if status < 500:
-        return f"{Colors.YELLOW}{status}"
-    return f"{Colors.RED}{status}"
+def color_status_code(status_code: int):
+    if status_code < 200:
+        return f"{Colors.BLUE}{status_code}"
+    if status_code < 300:
+        return f"{Colors.GREEN}{status_code}"
+    if status_code < 400:
+        return f"{Colors.CYAN}{status_code}"
+    if status_code < 500:
+        return f"{Colors.YELLOW}{status_code}"
+    return f"{Colors.RED}{status_code}"

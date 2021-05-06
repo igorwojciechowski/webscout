@@ -6,6 +6,8 @@ import requests
 import re
 
 from multiprocessing import pool as mpool
+
+from requests import Response
 from selenium.webdriver import Chrome, ChromeOptions
 
 import cli
@@ -37,12 +39,16 @@ class WebScout:
         })
 
     def probe(self, url: str) -> dict:
-        cli.req_info(url)
+        cli.info(f'Probing url: {url}...')
         try:
-            response = requests.get(self.create_url(url))
-            cli.req_ok(url, response.status_code)
+            response = requests.get(self.prepare_url(url))
+            cli.ok(f'Status code for {url}: {cli.color_status_code(response.status_code)}')
         except:
-            cli.req_error(url)
+            cli.error(f'{url} request failed')
+        filename = os.path.abspath(f'{self.report_dir}/responses/{uuid.uuid4()}.http')
+        with open(filename, 'w') as f:
+            f.write(self.parse_response(response))
+        cli.ok(f'Response from {url} saved to {filename}')
         return {
             'url': url,
             'status_code': response.status_code,
@@ -52,20 +58,26 @@ class WebScout:
 
     def take_screenshot(self, path: str, url: str) -> str:
         d = self.driver()
-        cli.screenshot_info(url)
+        cli.info(f'Taking screenshot of {url}...')
         try:
             d.get(url)
             filename = f"{uuid.uuid4()}.png"
             path = f"{path}/screenshots/{filename}"
             d.save_screenshot(path)
-            cli.screenshot_ok(url)
+            cli.ok(f'Screenshot for {url} successfully saved')
         except:
-            cli.screenshot_error(url)
+            cli.error(f'Screenshot of {url} failed')
         d.close()
         return filename
 
     @staticmethod
-    def create_url(url: str) -> str:
+    def parse_response(response: Response) -> str:
+        headers = '\r\n'.join(f'{k}: {v}' for k, v in response.headers.items())
+        body = response.text
+        return f"HTTP/1.1 {response.status_code} {response.reason}\nHost: {response.url}\n{headers}\n{body}\n"
+
+    @staticmethod
+    def prepare_url(url: str) -> str:
         protocol = re.search('(https?)', url)
         domain = re.search('([A-z0-9-]*\.){1,}[a-z]{0,3}', url)
         port = re.search('(?<=:)([0-9]{1,5})', url)
