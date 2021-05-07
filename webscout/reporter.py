@@ -2,7 +2,7 @@ import os
 
 from jinja2 import Environment, FileSystemLoader
 
-import cli
+from webscout import cli
 
 
 class Reporter:

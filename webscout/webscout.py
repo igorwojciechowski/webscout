@@ -10,8 +10,8 @@ from multiprocessing import pool as mpool
 from requests import Response
 from selenium.webdriver import Chrome, ChromeOptions
 
-import cli
-from reporter import Reporter
+from webscout.reporter import Reporter
+from webscout import cli
 
 
 class WebScout:
