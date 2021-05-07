@@ -10,6 +10,7 @@ from multiprocessing import pool as mpool
 from requests import Response
 from selenium.webdriver import Chrome, ChromeOptions
 
+from webscout.cli import print_banner
 from webscout.reporter import Reporter
 from webscout import cli
 
@@ -22,6 +23,7 @@ class WebScout:
         self.data = []
 
     def run(self) -> None:
+        print_banner()
         self.create_report_directory(self.report_dir)
         pool = mpool.ThreadPool(self.threads)
         for url in self.urls:

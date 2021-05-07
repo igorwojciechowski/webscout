@@ -1,5 +1,7 @@
 from argparse import ArgumentParser
 
+import webscout
+
 
 class Colors:
     BLUE = '\033[94m'
@@ -15,6 +17,18 @@ class Icons:
     OK = ''
     ERROR = ''
     ARROW = '➡'
+
+
+def print_banner() -> None:
+    print(f"""{Colors.BLUE}  
+ __          __  _     _____                 _   
+ \ \        / / | |   / ____|               | |  
+  \ \  /\  / /__| |__| (___   ___ ___  _   _| |_ 
+   \ \/  \/ / _ \ '_  \\___ \ / __/ _ \| | | | __|
+    \  /\  /  __/ |_) |___) | (_| (_) | |_| | |_ 
+     \/  \/ \___|_.__/_____/ \___\___/ \__,_|\__|
+    version: {Colors.GREEN}{webscout.__version__}{Colors.DEFAULT}
+    """)
 
 
 def config() -> (str, int):
