@@ -62,7 +62,7 @@ class WebScout:
         d = self.driver()
         cli.info(f'Taking screenshot of {url}...')
         try:
-            d.get(url)
+            d.get(self.prepare_url(url))
             filename = f"{uuid.uuid4()}.png"
             path = os.path.abspath(f"{self.report_dir}/screenshots/{filename}")
             d.save_screenshot(path)
@@ -86,12 +86,12 @@ class WebScout:
     @staticmethod
     def create_report_directory(path: str) -> None:
         if not os.path.exists(path):
-            for _ in [
+            for directory in [
                 f"{path}/",
                 f"{path}/screenshots",
                 f"{path}/responses"
             ]:
-                os.makedirs(_)
+                os.makedirs(directory)
 
     @staticmethod
     def driver() -> Chrome:

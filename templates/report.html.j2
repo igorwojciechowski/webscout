@@ -1,10 +1,8 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>WebScout Report</title>
 </head>
 <style>
@@ -14,7 +12,7 @@
 
     .main {
         margin: auto;
-        width: 530px;
+        max-width: 730px;
         align-items: center;
     }
 
@@ -26,18 +24,63 @@
     }
 
     .screenshot {
+        max-width: 700px;
+    }
+
+    .headers {
+        vertical-align: text-top;
+        max-width: 700px;
+    }
+
+    .headers.hidden {
+        display: none;
+    }
+
+    .header-key {
+        min-width: 200px;
+    }
+
+    .header-value {
         max-width: 500px;
+        word-wrap: break-word;
     }
 </style>
+
 <body>
-<div class="main">
-    {% for result in data %}
+    <div class="main">
+        {% for result in data %}
         <div class="result">
             <h3>{{ result['url'] }}</h3>
-            <img class="screenshot" src="./screenshots/{{ result['screenshot'] }}" alt="">
+            <table>
+                <tr>
+                    <img class="screenshot" src="./screenshots/{{ result['screenshot'] }}" alt="">
+                </tr>
+                <tr>
+                    <button onclick="toggleHeaders(this)">Headers</button>
+                </tr>
+                    {% for header, value in result['headers'].items() %}
+                    <tr class="headers hidden">
+                        <td class="header-key">{{ header }}</td>
+                        <td class="header-value">{{ value }}</td>
+                    </tr>
+                    {% endfor %}
+            </table>
             <a class="button" href="{{ result['url'] }}"></a>
         </div>
-    {% endfor %}
-</div>
+        {% endfor %}
+    </div>
+    <script>
+        function toggleHeaders(el) {
+            let headers = el.parentElement.getElementsByClassName('headers');
+            for (let header of headers) {
+                if (header.classList.contains('hidden')) {
+                    header.classList.remove('hidden');
+                    continue;
+                }
+                header.classList.add('hidden');
+            }
+        }
+    </script>
 </body>
+
 </html>

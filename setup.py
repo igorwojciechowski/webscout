@@ -8,7 +8,7 @@ setup(
     author='Igor Wojciechowski',
     author_email='igorxwojciechowski@gmail.com',
     install_requires=[
-        'chromedriver==2.24.1',
+        'chromedriver>=2.24.1',
         'jinja2==2.11.3',
         'requests==2.25.1',
         'selenium==3.141.0'

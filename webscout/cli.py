@@ -4,12 +4,12 @@ import webscout
 
 
 class Colors:
-    BLUE = '\033[94m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    CYAN = '\033[96m'
-    DEFAULT = '\033[0m'
+    BLUE = '\u001b[34m'
+    GREEN = '\u001b[32m'
+    YELLOW = '\u001b[33m'
+    RED = '\u001b[31m'
+    CYAN = '\u001b[36m'
+    DEFAULT = '\u001b[0m'
 
 
 class Icons:
