@@ -30,6 +30,7 @@
     .headers {
         vertical-align: text-top;
         max-width: 700px;
+        font-family: "Consolas";
     }
 
     .headers.hidden {
@@ -37,6 +38,7 @@
     }
 
     .header-key {
+        font-weight: bold;
         min-width: 200px;
     }
 
@@ -44,19 +46,35 @@
         max-width: 500px;
         word-wrap: break-word;
     }
+
+    .button {
+        color: white;
+        background-color: rgb(196, 196, 196);
+        text-decoration: none;
+        min-width: 100px;
+        padding: 5px 10px 5px 10px;
+        margin-right: 15px;
+    }
+
+    .button:hover {
+        background-color: rgb(206, 206, 206);
+    }
 </style>
 
 <body>
     <div class="main">
         {% for result in data %}
         <div class="result">
-            <h3>{{ result['url'] }}</h3>
+            <h3>
+                {{ result['url'] }} -> {{ result['status_code'] }}
+            </h3>
             <table>
                 <tr>
                     <img class="screenshot" src="./screenshots/{{ result['screenshot'] }}" alt="">
                 </tr>
                 <tr>
-                    <button onclick="toggleHeaders(this)">Headers</button>
+                    <a class="button" href="#" onclick="toggleHeaders(this)">Headers</a>
+                    <a class="button" href="{{ result['url'] }}" target="_blank">Visit</a>
                 </tr>
                     {% for header, value in result['headers'].items() %}
                     <tr class="headers hidden">
@@ -65,7 +83,6 @@
                     </tr>
                     {% endfor %}
             </table>
-            <a class="button" href="{{ result['url'] }}"></a>
         </div>
         {% endfor %}
     </div>
