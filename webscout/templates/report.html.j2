@@ -73,7 +73,7 @@
                     <img class="screenshot" src="./screenshots/{{ result['screenshot'] }}" alt="">
                 </tr>
                 <tr>
-                    <a class="button" href="#" onclick="toggleHeaders(this)">Headers</a>
+                    <a class="button" href="javascript:void(0);" onclick="toggleHeaders(this)">Headers</a>
                     <a class="button" href="{{ result['url'] }}" target="_blank">Visit</a>
                 </tr>
                     {% for header, value in result['headers'].items() %}
