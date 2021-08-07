@@ -14,13 +14,12 @@ setup(
         'selenium==3.141.0'
     ],
     package_data={
-        'webscout.templates': [
-            '*.j2'
+        'webscout': [
+            'templates/*.j2'
         ]
     },
     packages=[
-        'webscout',
-        'templates'
+        'webscout'
     ],
     package_dir={
         'webscout': './webscout'
