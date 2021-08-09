@@ -10,7 +10,6 @@ from multiprocessing import pool as mpool
 from requests import Response
 from selenium.webdriver import Chrome, ChromeOptions
 
-from webscout.cli import print_banner
 from webscout.reporter import Reporter
 from webscout import cli
 
@@ -18,12 +17,20 @@ from webscout import cli
 class WebScout:
 
     def __init__(self, config) -> None:
-        self.report_dir, self.threads = config
+        self.report_dir, self.threads, self.timeout = config
         self.urls = self.read_urls()
         self.data = []
 
+    def driver(self) -> Chrome:
+        options = ChromeOptions()
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        driver = Chrome(options=options)
+        driver.set_window_size(1920, 1080)
+        driver.set_page_load_timeout(self.timeout)
+        return driver
+
     def run(self) -> None:
-        print_banner()
         self.create_report_directory(self.report_dir)
         pool = mpool.ThreadPool(self.threads)
         for url in self.urls:
@@ -43,7 +50,7 @@ class WebScout:
     def probe(self, url: str) -> dict:
         cli.info(f'Probing url: {url}...')
         try:
-            response = requests.get(self.prepare_url(url))
+            response = requests.get(self.prepare_url(url), timeout=self.timeout)
             cli.ok(f'Status code for {url}: {cli.color_status_code(response.status_code)}')
         except:
             cli.error(f'{url} request failed')
@@ -92,15 +99,6 @@ class WebScout:
                 f"{path}/responses"
             ]:
                 os.makedirs(directory)
-
-    @staticmethod
-    def driver() -> Chrome:
-        options = ChromeOptions()
-        options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        driver = Chrome(options=options)
-        driver.set_window_size(1920, 1080)
-        return driver
 
     @staticmethod
     def prepare_url(url: str) -> str:

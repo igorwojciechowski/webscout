@@ -31,12 +31,13 @@ def print_banner() -> None:
     """)
 
 
-def config() -> (str, int):
+def config() -> (str, int, int):
     argparser = ArgumentParser()
-    argparser.add_argument('-o', '--output', default='webscout_report')
-    argparser.add_argument('-t', '--threads', default=5, type=int)
+    argparser.add_argument('-o', '--output', default='webscout_report', help="Output directory for report")
+    argparser.add_argument('-th', '--threads', default=5, type=int, help="Number of threads")
+    argparser.add_argument('-to', '--timeout', default=5, type=int, help="Requests/Screenshots timeout in seconds")
     args = argparser.parse_args()
-    return args.output, args.threads
+    return args.output, args.threads, args.timeout
 
 
 def info(msg: str) -> None:
